@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<script src="assignment.js"></script>
+		<link type = "text/css" rel="stylesheet" href="stylesheet.css"/>
+		<title>Test Driver</title>
+	</head>
+		
+	<body>   
+		<table id="output" border="1"></table>
+		<br>
+		<input type="button" value="Randomize" onclick="rand()">
+		Students:<input type="text" id="size" value="35" cols="5">
+		Groups:<input type="text"  id="groups" value="9" cols="5"><br>
+		OR<br>
+		<input type="button" value="Use csv String" onclick="csvIn()">
+			Csv String: <textarea id="csv" cols="120" placeholder='Name,Pref0,Pref1,...(One student/row)' rows="5"></textarea>
+		
+		<script>
+		var parser1 = new parser();
+		function csvIn(){
+			var csv = document.getElementById("csv").value;
+			parser1.parsecsv(csv);
+			printResults();
+		}
+		
+		function rand(){
+			var x = document.getElementById("data");
+			var output = document.getElementById("output");
+			
+			var size = document.getElementById("size").value;
+			var groups = document.getElementById("groups").value;
+			
+			parser1.randomize(size, groups);
+			printResults();
+		}
+		
+		function printResults(){
+			var solver1 = new solver(parser1.getStudents());
+			var students = solver1.getStudents();
+			var tHead = document.createElement("thead");
+			var headRow = document.createElement("tr");
+			
+			var headName = document.createElement("th");
+			var headNameText = document.createTextNode("Name");
+			headName.appendChild(headNameText);
+			headRow.appendChild(headName);
+			
+			var headGroup = document.createElement("th");
+			var headGroupText = document.createTextNode("Assignment");
+			headGroup.appendChild(headGroupText);
+			headRow.appendChild(headGroup);
+			for (var j = 0; j < students.groups; j++){
+				var headGroupNumber = document.createElement("th");
+				var headGroupNumberText = document.createTextNode(students.groupNames[j]);
+				headGroupNumber.appendChild(headGroupNumberText);
+				headRow.appendChild(headGroupNumber);
+			}
+			tHead.appendChild(headRow);
+			
+			var tBody = document.createElement("tbody");
+			for (var i = 0; i < students.size; i++) {
+				var tRow = document.createElement("tr");
+				
+				var nameCell = document.createElement("td");
+				var nameCellText = document.createTextNode(students[i].name);
+				nameCell.appendChild(nameCellText);
+				tRow.appendChild(nameCell);
+				
+				var groupCell = document.createElement("td");
+				var groupCellText = document.createTextNode(students.groupNames[students[i].group]);
+				groupCell.appendChild(groupCellText);
+				tRow.appendChild(groupCell);
+				
+				for (var j = 0; j < students.groups; j++){
+					var cell = document.createElement("td");
+					var cellText = document.createTextNode(students[i][j]);
+					cell.appendChild(cellText);
+					tRow.appendChild(cell);
+				}
+					
+				tBody.appendChild(tRow);
+			}
+			output.appendChild(tHead);
+			output.appendChild(tBody);
+		}
+		</script>
+	</body>
+</html>
